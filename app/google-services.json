@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "524237776822",
+    "project_id": "garima-peti",
+    "storage_bucket": "garima-peti.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:524237776822:android:3dbdcb1586fa42569fc317",
+        "android_client_info": {
+          "package_name": "com.example.garimapeti"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBR0vMaPftGn37J4wgg9TWb98s4Aj_nLiQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
