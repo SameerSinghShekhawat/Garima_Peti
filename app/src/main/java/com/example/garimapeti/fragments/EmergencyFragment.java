@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.media.Image;
 import android.os.Bundle;
 
@@ -25,6 +26,8 @@ import android.widget.Toast;
 
 import com.example.garimapeti.MainActivity;
 import com.example.garimapeti.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 public class EmergencyFragment extends Fragment {
 
@@ -33,6 +36,8 @@ public class EmergencyFragment extends Fragment {
     Button addBtn;
     String phone;
     Boolean isPhoneAdded;
+    FusedLocationProviderClient fusedLocationProviderClient;
+    double latitude, longitude;
 
     public EmergencyFragment() {
         // Required empty public constructor
@@ -53,11 +58,14 @@ public class EmergencyFragment extends Fragment {
         });
 
         sosIV.setOnClickListener(view12 -> {
-            if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.SEND_SMS)
-            == PackageManager.PERMISSION_GRANTED){
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.SEND_SMS)
+                    == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
                 sendSMS();
             } else {
                 requestPermissionLauncher.launch(Manifest.permission.SEND_SMS);
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
             }
         });
 
@@ -66,12 +74,33 @@ public class EmergencyFragment extends Fragment {
 
     private void sendSMS() {
         SmsManager smsManager = SmsManager.getDefault();
-        if(phone.length()!=0 && !emPhEditText.isEnabled()) {
+        if (phone.length() != 0 && !emPhEditText.isEnabled()) {
             smsManager.sendTextMessage(phone, null, "From App", null, null);
             Toast.makeText(getContext(), "Message Sent", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getContext(), "Add Phone Number First", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+            return;
+        }
+        fusedLocationProviderClient.getLastLocation()
+                .addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+
+                    }
+                });
     }
 
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
